@@ -1,5 +1,5 @@
 import express from 'express'
-import tenantRoutes from './routes/tenant-routes'
+import tenantRoutes from './routes/tenant-routes.js'
 
 const app = express()
 

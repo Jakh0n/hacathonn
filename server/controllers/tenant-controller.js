@@ -1,5 +1,3 @@
-import { Request, Response } from 'express'
-
 const tenants = [
 	{
 		id: 'abc123',
@@ -15,7 +13,7 @@ const tenants = [
 	},
 ]
 
-export const getTenantDetails = (req: Request, res: Response) => {
+export const getTenantDetails = (req, res) => {
 	const tenant = tenants.find(t => t.id === req.params.id)
 	if (tenant) {
 		res.status(200).json(tenant)
@@ -24,7 +22,7 @@ export const getTenantDetails = (req: Request, res: Response) => {
 	}
 }
 
-export const getTenantConfig = (req: Request, res: Response) => {
+export const getTenantConfig = (req, res) => {
 	const tenant = tenants.find(t => t.id === req.params.tenantId)
 	if (tenant) {
 		res.status(200).json(tenant.config)
