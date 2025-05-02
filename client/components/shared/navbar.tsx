@@ -21,14 +21,14 @@ const Navbar = ({
 		<div>
 			<nav className='bg-gray-800 dark:bg-gray-900 shadow-lg p-4 flex justify-between items-center'>
 				<div className='flex items-center'>
-					<h1 className='text-xl font-bold text-indigo-400 mr-4'>
-						Tenant Dashboard
+					<h1 className='text-xl font-semibold text-indigo-400 p-2 border rounded-lg mr-2'>
+						Dashboard
 					</h1>
 					<div className='relative'>
 						<select
 							value={tenantId}
 							onChange={e => setTenantId(e.target.value)}
-							className='p-2 rounded-lg bg-gray-700 text-white border-2 border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+							className='p-2 rounded-lg bg-gray-700 text-white border-2 border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500'
 						>
 							<option value=''>Select Tenant</option>
 							<option value='tenant1'>Tenant 1</option>

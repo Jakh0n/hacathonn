@@ -8,56 +8,26 @@ import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { fetchTenantConfig } from '@/lib/api'
 import { useSocket } from '@/lib/socket'
+import { cn } from '@/lib/utils'
+import { Tenant } from '@/types'
 import { useEffect, useState } from 'react'
-import {
-	Bar,
-	BarChart,
-	Cell,
-	Pie,
-	PieChart,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from 'recharts'
-
-interface TenantConfig {
-	enableRealtimeChat: boolean
-	theme: 'light' | 'dark'
-	enableNotifications: boolean
-}
-
-const userActivityData = [
-	{ day: 'Mon', users: 120 },
-	{ day: 'Tue', users: 150 },
-	{ day: 'Wed', users: 90 },
-	{ day: 'Thu', users: 200 },
-	{ day: 'Fri', users: 180 },
-	{ day: 'Sat', users: 220 },
-	{ day: 'Sun', users: 160 },
-]
-
-const usageDistributionData = [
-	{ name: 'Active Users', value: 60 },
-	{ name: 'Inactive Users', value: 40 },
-]
-
-const COLORS = ['#5a67d8', '#e53e3e']
+import DashboardModules from '../_components/dashboard-modules'
+import SideBar from '../_components/side-bar'
 
 export default function Dashboard() {
 	const [tenantId, setTenantId] = useState<string>('')
-	const [tenantConfig, setTenantConfig] = useState<TenantConfig | null>(null)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
 	const { toast } = useToast()
 	const socket = useSocket()
+	const [tenant, setTenant] = useState<Tenant | null>(null)
 
 	// Fetch tenant configuration
 	const loadTenantConfig = async (id: string) => {
 		setIsLoading(true)
 		try {
-			const config = await fetchTenantConfig(id)
-			setTenantConfig(config)
+			const tenantData = await fetchTenantConfig(id)
+			setTenant(tenantData)
 			localStorage.setItem('tenantId', id)
 		} catch (error: any) {
 			toast({
@@ -74,14 +44,14 @@ export default function Dashboard() {
 
 	// WebSocket setup for notifications
 	useEffect(() => {
-		if (socket && tenantConfig?.enableNotifications) {
+		if (socket && tenant?.config.enableNotifications) {
 			socket.on('notification', (message: string) => {
 				toast({
 					title: 'Notification',
 					description: message,
 					variant: 'default',
 					className:
-						tenantConfig.theme === 'dark'
+						tenant.config.theme === 'dark'
 							? 'bg-gray-800 text-white border-gray-600'
 							: 'bg-white text-gray-900 border-gray-200',
 				})
@@ -91,7 +61,7 @@ export default function Dashboard() {
 				socket.off('notification')
 			}
 		}
-	}, [socket, tenantConfig?.enableNotifications])
+	}, [socket, tenant?.config.enableNotifications])
 
 	// Load saved tenant on mount
 	useEffect(() => {
@@ -119,18 +89,18 @@ export default function Dashboard() {
 	// Clear tenant session
 	const clearTenant = () => {
 		setTenantId('')
-		setTenantConfig(null)
+		setTenant(null)
 		localStorage.removeItem('tenantId')
-		setIsMobileMenuOpen(false)
 	}
 
 	return (
 		<div
-			className={
-				tenantConfig?.theme === 'dark'
-					? 'dark bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen'
-					: 'bg-gradient-to-br from-blue-50 via-gray-100 to-white min-h-screen'
-			}
+			className={cn(
+				'h-full',
+				tenant?.config.theme === 'dark'
+					? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
+					: 'bg-gradient-to-br from-blue-50 via-gray-100 to-white'
+			)}
 		>
 			{/* Navbar */}
 			<Navbar
@@ -142,39 +112,12 @@ export default function Dashboard() {
 			/>
 
 			{/* Sidebar and Main Content */}
-			<div className='flex'>
+			<div className='flex h-full'>
 				{/* Sidebar */}
-				<aside className='w-64 bg-gray-800 text-white p-4 shadow-2xl'>
-					<h2 className='text-2xl font-bold mb-6 text-indigo-400'>
-						Tenant Menu
-					</h2>
-					<nav>
-						<ul className='space-y-4'>
-							<li>
-								<Button
-									variant='ghost'
-									onClick={() => setTenantId('tenant1')}
-									className='w-full justify-start text-white hover:bg-indigo-600'
-								>
-									Tenant 1
-								</Button>
-							</li>
-							<li>
-								<Button
-									variant='ghost'
-									onClick={() => setTenantId('tenant2')}
-									className='w-full justify-start text-white hover:bg-indigo-600'
-								>
-									Tenant 2
-								</Button>
-							</li>
-						</ul>
-					</nav>
-				</aside>
-
+				<SideBar setTenantId={setTenantId} />
 				{/* Main Content */}
 				<main className='flex-1 p-6'>
-					{!tenantConfig ? (
+					{!tenant ? (
 						<Card className='max-w-md mx-auto mt-12 shadow-xl'>
 							<CardHeader>
 								<CardTitle className='text-3xl text-indigo-600 dark:text-indigo-300'>
@@ -200,115 +143,15 @@ export default function Dashboard() {
 							</CardContent>
 						</Card>
 					) : (
-						<div className='space-y-8'>
-							<h1 className='text-4xl font-extrabold text-indigo-600 dark:text-indigo-300 animate-fade-in'>
-								Welcome to{' '}
-								{tenantId === 'tenant1' ? 'Tenant One' : 'Tenant Two'} Dashboard
+						<div className=''>
+							<h1
+								className={`text-2xl font-semibold font-spaceGrotesk animate-fade-in space-grotesk mb-4 ${
+									tenant.config.theme === 'dark' ? 'text-white' : 'text-black'
+								}`}
+							>
+								Welcome to {tenant.name} Dashboard
 							</h1>
-
-							{/* Dashboard Modules */}
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-								{tenantConfig.enableRealtimeChat && (
-									<Card className='shadow-xl'>
-										<CardHeader>
-											<CardTitle className='text-2xl text-indigo-600 dark:text-indigo-300'>
-												Real-Time Chat
-											</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<p className='text-gray-600 dark:text-gray-300 text-lg'>
-												Engage in real-time conversations with your team.
-											</p>
-										</CardContent>
-									</Card>
-								)}
-								<Card className='shadow-xl'>
-									<CardHeader>
-										<CardTitle className='text-2xl text-indigo-600 dark:text-indigo-300'>
-											Analytics
-										</CardTitle>
-									</CardHeader>
-									<CardContent>
-										<div className='space-y-6'>
-											<p className='text-gray-600 dark:text-gray-300 text-lg'>
-												User Activity (Last 7 Days):
-											</p>
-											<div className='h-64'>
-												<ResponsiveContainer width='100%' height='100%'>
-													<BarChart data={userActivityData}>
-														<XAxis
-															dataKey='day'
-															stroke={
-																tenantConfig.theme === 'dark'
-																	? '#a0aec0'
-																	: '#4a5568'
-															}
-														/>
-														<YAxis
-															stroke={
-																tenantConfig.theme === 'dark'
-																	? '#a0aec0'
-																	: '#4a5568'
-															}
-														/>
-														<Tooltip
-															contentStyle={{
-																backgroundColor:
-																	tenantConfig.theme === 'dark'
-																		? '#1a202c'
-																		: '#fff',
-																borderColor:
-																	tenantConfig.theme === 'dark'
-																		? '#4a5568'
-																		: '#e2e8f0',
-															}}
-														/>
-														<Bar dataKey='users' fill='#5a67d8' />
-													</BarChart>
-												</ResponsiveContainer>
-											</div>
-											<p className='text-gray-600 dark:text-gray-300 text-lg'>
-												Usage Distribution:
-											</p>
-											<div className='h-64'>
-												<ResponsiveContainer width='100%' height='100%'>
-													<PieChart>
-														<Pie
-															data={usageDistributionData}
-															dataKey='value'
-															nameKey='name'
-															cx='50%'
-															cy='50%'
-															outerRadius={80}
-															fill='#8884d8'
-															label
-														>
-															{usageDistributionData.map((entry, index) => (
-																<Cell
-																	key={`cell-${index}`}
-																	fill={COLORS[index % COLORS.length]}
-																/>
-															))}
-														</Pie>
-														<Tooltip
-															contentStyle={{
-																backgroundColor:
-																	tenantConfig.theme === 'dark'
-																		? '#1a202c'
-																		: '#fff',
-																borderColor:
-																	tenantConfig.theme === 'dark'
-																		? '#4a5568'
-																		: '#e2e8f0',
-															}}
-														/>
-													</PieChart>
-												</ResponsiveContainer>
-											</div>
-										</div>
-									</CardContent>
-								</Card>
-							</div>
+							<DashboardModules tenant={tenant} />
 						</div>
 					)}
 					<Toaster />

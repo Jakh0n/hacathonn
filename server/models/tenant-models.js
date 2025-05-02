@@ -1,7 +1,7 @@
 const tenants = [
 	{
-		id: 'tenant1',
-		name: 'Tenant One',
+		id: uuidv4(),
+		name: 'Tenant 1',
 		domain: 'tenant1.example.com',
 		config: {
 			enableRealtimeChat: true,
@@ -10,8 +10,8 @@ const tenants = [
 		},
 	},
 	{
-		id: 'tenant2',
-		name: 'Tenant Two',
+		id: uuidv4(),
+		name: 'Tenant 2',
 		domain: 'tenant2.example.com',
 		config: {
 			enableRealtimeChat: false,
