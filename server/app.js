@@ -6,12 +6,12 @@ import setupTenantRoutes from './routes/tenant-routes.js'
 
 const app = express()
 const httpServer = http.createServer(app)
-const io = new Server(httpServer, { cors: { origin: 'http://localhost:3000' } })
+const io = new Server(httpServer, { cors: { origin: '*' } })
 
 // Enable CORS for all routes
 app.use(
 	cors({
-		origin: 'http://localhost:3000',
+		origin: '*',
 		methods: ['GET', 'POST'],
 		allowedHeaders: ['Content-Type'],
 	})
