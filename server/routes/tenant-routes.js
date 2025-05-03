@@ -5,6 +5,11 @@ const router = express.Router()
 
 // Function to set up routes with io
 const setupTenantRoutes = io => {
+	// GET /api/tenants
+	router.get('/tenants', (req, res) => {
+		res.json(tenants)
+	})
+
 	// GET /api/tenants/:id
 	router.get('/tenants/:id', (req, res) => {
 		const tenant = tenants.find(t => t.id === req.params.id)

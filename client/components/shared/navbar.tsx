@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import { Button } from '../ui/button'
 
 interface NavbarProps {
@@ -16,12 +15,11 @@ const Navbar = ({
 	handleTenantSelect,
 	clearTenant,
 }: NavbarProps) => {
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 	return (
-		<div>
-			<nav className='bg-gray-800 dark:bg-gray-900 shadow-lg p-4 flex justify-between items-center'>
-				<div className='flex items-center'>
-					<h1 className='text-xl font-semibold text-indigo-400 p-2 border rounded-lg mr-2'>
+		<div className='fixed z-40 w-full bg-gray-300 shadow-lg p-4 border-b h-[10vh] backdrop-blur-lg bg-white/30  border-gray-500 rounded-lg '>
+			<nav className=' flex justify-between  items-center '>
+				<div className='flex  items-center'>
+					<h1 className='text-xl font-semibold text-indigo-400  mr-2'>
 						Dashboard
 					</h1>
 					<div className='relative'>
@@ -43,20 +41,7 @@ const Navbar = ({
 						</Button>
 					</div>
 				</div>
-				<div className='md:hidden'>
-					<Button
-						variant='ghost'
-						onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-						className='text-white'
-					>
-						{isMobileMenuOpen ? 'Close' : 'Menu'}
-					</Button>
-				</div>
-				<div
-					className={`md:flex ${
-						isMobileMenuOpen ? 'block' : 'hidden'
-					} md:space-x-4`}
-				>
+				<div>
 					<Button
 						variant='destructive'
 						onClick={clearTenant}

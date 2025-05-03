@@ -1,9 +1,6 @@
 'use client'
 
 import Navbar from '@/components/shared/navbar'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { fetchTenantConfig } from '@/lib/api'
@@ -12,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { Tenant } from '@/types'
 import { useEffect, useState } from 'react'
 import DashboardModules from '../_components/dashboard-modules'
+import SelectTenant from '../_components/select-tenant'
 import SideBar from '../_components/side-bar'
 
 export default function Dashboard() {
@@ -116,34 +114,16 @@ export default function Dashboard() {
 				{/* Sidebar */}
 				<SideBar setTenantId={setTenantId} />
 				{/* Main Content */}
-				<main className='flex-1 p-6'>
+				<main className='flex-1 p-6 mt-16'>
 					{!tenant ? (
-						<Card className='max-w-md mx-auto mt-12 shadow-xl'>
-							<CardHeader>
-								<CardTitle className='text-3xl text-indigo-600 dark:text-indigo-300'>
-									Select Tenant
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<form onSubmit={handleTenantSelect} className='space-y-6'>
-									<Input
-										value={tenantId}
-										onChange={e => setTenantId(e.target.value)}
-										placeholder='Enter Tenant ID (e.g., tenant1 or tenant2)'
-										className='w-full p-3 text-lg text-gray-900 dark:text-gray-100 border-2 border-indigo-300 dark:border-indigo-600 rounded-lg focus:ring-2 focus:ring-indigo-500'
-									/>
-									<Button
-										type='submit'
-										disabled={isLoading}
-										className='w-full py-3 text-lg bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg transition-colors'
-									>
-										{isLoading ? 'Loading...' : 'Load Tenant'}
-									</Button>
-								</form>
-							</CardContent>
-						</Card>
+						<SelectTenant
+							setTenantId={setTenantId}
+							tenantId={tenantId}
+							isLoading={isLoading}
+							handleTenantSelect={handleTenantSelect}
+						/>
 					) : (
-						<div className=''>
+						<div>
 							<h1
 								className={`text-2xl font-semibold font-spaceGrotesk animate-fade-in space-grotesk mb-4 ${
 									tenant.config.theme === 'dark' ? 'text-white' : 'text-black'

@@ -1,30 +1,32 @@
 import { Button } from '@/components/ui/button'
 
-const SideBar = ({
-	setTenantId,
-}: {
+interface SideBarProps {
 	setTenantId: (tenantId: string) => void
-}) => {
+}
+
+const SideBar = ({ setTenantId }: SideBarProps) => {
 	return (
 		<>
-			<aside className='w-64 bg-gray-800 text-white p-4 shadow-2xl'>
-				<h2 className='text-2xl font-bold mb-6 text-indigo-400'>Tenant Menu</h2>
+			<aside className='w-64 max-sm:hidden mt-20  p-2 border-r border-gray-200 rounded-lg'>
+				<h2 className='text-2xl font-bold mb-6 text-black font-spaceGrotesk'>
+					Tenant Menu
+				</h2>
 				<nav>
 					<ul className='space-y-4'>
 						<li>
 							<Button
-								variant='ghost'
+								variant='outline'
 								onClick={() => setTenantId('tenant1')}
-								className='w-full justify-start text-white hover:bg-indigo-600'
+								className='w-full justify-start bg-gray-100  text-black hover:text-white hover:bg-indigo-600'
 							>
 								Tenant 1
 							</Button>
 						</li>
 						<li>
 							<Button
-								variant='ghost'
+								variant='outline'
 								onClick={() => setTenantId('tenant2')}
-								className='w-full justify-start text-white hover:bg-indigo-600'
+								className='w-full justify-start bg-gray-100  text-black hover:text-white hover:bg-indigo-600'
 							>
 								Tenant 2
 							</Button>
