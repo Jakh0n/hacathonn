@@ -8,7 +8,11 @@ export const useSocket = (): Socket | null => {
 
 	useEffect(() => {
 		const newSocket = io(
-			process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3001'
+			process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3001',
+			{
+				withCredentials: true,
+				transports: ['websocket', 'polling'],
+			}
 		)
 		setSocket(newSocket)
 		return () => {

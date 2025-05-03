@@ -8,18 +8,37 @@ const setupTenantRoutes = require('./routes/tenant-routes')
 const app = express()
 const httpServer = http.createServer(app)
 
-// Use environment variable for CORS origin
-const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000'
-const io = new Server(httpServer, { cors: { origin: allowedOrigin } })
+// Faqat frontend domeniga ruxsat beramiz
+const allowedOrigin =
+	process.env.ALLOWED_ORIGIN || 'https://hacathon-frontend-neon.vercel.app'
 
-// Enable CORS for all routes
+// Express uchun CORS middleware
 app.use(
 	cors({
 		origin: allowedOrigin,
 		methods: ['GET', 'POST'],
 		allowedHeaders: ['Content-Type'],
+		credentials: true,
 	})
 )
+
+// Socket.IO uchun ham allowedOrigin ni ishlatamiz
+const io = new Server(httpServer, {
+	cors: {
+		origin: allowedOrigin,
+		methods: ['GET', 'POST'],
+		credentials: true,
+	},
+})
+
+// Asosiy yo'l
+app.get('/', (req, res) => {
+	res.status(200).json({
+		status: 'ok',
+		message: 'Server is running',
+		api: '/api',
+	})
+})
 
 app.use(express.json())
 app.use('/api', setupTenantRoutes(io))
@@ -33,4 +52,5 @@ io.on('connection', socket => {
 const PORT = process.env.PORT || 3001
 httpServer.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`)
+	console.log(`Allowed origin: ${allowedOrigin}`)
 })
