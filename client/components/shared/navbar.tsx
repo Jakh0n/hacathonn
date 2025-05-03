@@ -19,10 +19,10 @@ const Navbar = ({
 		<div className='fixed z-40 w-full bg-gray-300 shadow-lg p-4 border-b h-[10vh] backdrop-blur-lg bg-white/30  border-gray-500 rounded-lg '>
 			<nav className=' flex justify-between  items-center '>
 				<div className='flex  items-center'>
-					<h1 className='text-xl font-semibold text-indigo-400  mr-2'>
+					<h1 className='text-xl max-sm:hidden font-semibold text-indigo-400  mr-2'>
 						Dashboard
 					</h1>
-					<div className='relative'>
+					<div className='relative max-sm:absolute max-sm:top-3 max-sm:left-0 max-sm:w-full max-sm:z-10'>
 						<select
 							value={tenantId}
 							onChange={e => setTenantId(e.target.value)}
