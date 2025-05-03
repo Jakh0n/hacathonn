@@ -5,18 +5,18 @@ const router = express.Router()
 
 // Function to set up routes with io
 const setupTenantRoutes = io => {
-	// GET /api/tenants
+	// GET /api/tenants - Fetch all tenants
 	router.get('/tenants', (req, res) => {
 		res.json(tenants)
 	})
 
-	// GET /api/tenants/:id
+	// GET /api/tenants/:id - Fetch tenant by name
 	router.get('/tenants/:id', (req, res) => {
 		const tenant = tenants.find(t => t.id === req.params.id)
 		if (!tenant) {
 			return res.status(404).json({ error: 'Tenant not found' })
 		}
-		// Simulate notification
+		// Emit notification if enabled
 		if (tenant.config.enableNotifications) {
 			io.emit('notification', `Welcome to ${tenant.name}!`)
 		}

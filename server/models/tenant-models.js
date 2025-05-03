@@ -1,8 +1,6 @@
-const { v4: uuidv4 } = require('uuid')
-
 const tenants = [
 	{
-		id: uuidv4(),
+		id: 'Tenant 1',
 		name: 'Tenant 1',
 		domain: 'tenant1.example.com',
 		config: {
@@ -12,7 +10,7 @@ const tenants = [
 		},
 	},
 	{
-		id: uuidv4(),
+		id: 'Tenant 2',
 		name: 'Tenant 2',
 		domain: 'tenant2.example.com',
 		config: {
