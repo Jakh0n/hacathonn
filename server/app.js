@@ -9,8 +9,7 @@ const app = express()
 const httpServer = http.createServer(app)
 
 // Faqat frontend domeniga ruxsat beramiz
-const allowedOrigin =
-	process.env.ALLOWED_ORIGIN || 'https://hacathon-frontend-neon.vercel.app'
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000'
 
 // Express uchun CORS middleware
 app.use(

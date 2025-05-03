@@ -5,7 +5,7 @@ interface NavbarProps {
 	tenantId: string
 	setTenantId: (id: string) => void
 	isLoading: boolean
-	handleTenantSelect: (e: React.FormEvent) => Promise<void>
+	handleTenantSelect: (tenantId: string) => Promise<void>
 	clearTenant: () => void
 }
 const Navbar = ({
@@ -16,7 +16,7 @@ const Navbar = ({
 	clearTenant,
 }: NavbarProps) => {
 	return (
-		<div className='fixed z-40 w-full bg-gray-300 shadow-lg p-4 border-b h-[10vh] backdrop-blur-lg bg-white/30  border-gray-500 rounded-lg '>
+		<div className='fixed z-40 w-full bg-gray-300 shadow-lg p-4 border-b h-[10vh] backdrop-blur-lg bg-white/30  border-gray-500 rounded-lg max-w-6xl mx-auto '>
 			<nav className=' flex justify-between  items-center '>
 				<div className='flex  items-center'>
 					<h1 className='text-xl max-sm:hidden font-semibold text-indigo-400  mr-2'>
@@ -33,7 +33,7 @@ const Navbar = ({
 							<option value='tenant2'>Tenant 2</option>
 						</select>
 						<Button
-							onClick={handleTenantSelect}
+							onClick={() => handleTenantSelect(tenantId)}
 							disabled={isLoading}
 							className='ml-2 py-1 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors'
 						>

@@ -7,6 +7,7 @@ import { fetchTenantConfig } from '@/lib/api'
 import { useSocket } from '@/lib/socket'
 import { cn } from '@/lib/utils'
 import { Tenant } from '@/types'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import DashboardModules from '../_components/dashboard-modules'
 import SelectTenant from '../_components/select-tenant'
@@ -19,6 +20,7 @@ export default function Dashboard() {
 	const { toast } = useToast()
 	const socket = useSocket()
 	const [tenant, setTenant] = useState<Tenant | null>(null)
+	const router = useRouter()
 
 	// Fetch tenant configuration
 	const loadTenantConfig = async (id: string) => {
@@ -71,17 +73,23 @@ export default function Dashboard() {
 	}, [])
 
 	// Handle tenant selection
-	const handleTenantSelect = async (e: React.FormEvent) => {
-		e.preventDefault()
-		if (!tenantId || !['tenant1', 'tenant2'].includes(tenantId)) {
+	const handleTenantSelect = async (tenantId: string) => {
+		setIsLoading(true)
+		try {
+			const tenantData = await fetchTenantConfig(tenantId)
+			setTenant(tenantData)
+			localStorage.setItem('tenantId', tenantId)
+		} catch (error: any) {
 			toast({
 				title: 'Error',
-				description: 'Please enter a valid tenant ID (tenant1 or tenant2)',
+				description: `Failed to fetch tenant configuration: ${
+					error.response?.data?.error || error.message
+				}`,
 				variant: 'destructive',
 			})
-			return
+		} finally {
+			setIsLoading(false)
 		}
-		await loadTenantConfig(tenantId)
 	}
 
 	// Clear tenant session
@@ -94,7 +102,7 @@ export default function Dashboard() {
 	return (
 		<div
 			className={cn(
-				'h-full',
+				'h-full max-w-6xl mx-auto',
 				tenant?.config.theme === 'dark'
 					? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
 					: 'bg-gradient-to-br from-blue-50 via-gray-100 to-white'
@@ -114,7 +122,11 @@ export default function Dashboard() {
 				{/* Sidebar */}
 				{tenant && <SideBar setTenantId={setTenantId} tenant={tenant} />}
 				{/* Main Content */}
-				<main className='flex-1 p-6 mt-16'>
+				<main
+					className={`flex-1 p-6 mt-16 ${
+						tenant?.config.theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+					}`}
+				>
 					{!tenant ? (
 						<SelectTenant
 							setTenantId={setTenantId}

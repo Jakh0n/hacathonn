@@ -1,13 +1,10 @@
-import { Button } from '@/components/ui/button'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 
 interface SelectTenantProps {
 	setTenantId: (tenantId: string) => void
 	tenantId: string
 	isLoading: boolean
-	handleTenantSelect: (e: React.FormEvent<HTMLFormElement>) => void
+	handleTenantSelect: (tenantId: string) => void
 }
 
 const SelectTenant = ({
@@ -24,21 +21,20 @@ const SelectTenant = ({
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<form onSubmit={handleTenantSelect} className='space-y-6'>
-					<Input
-						value={tenantId}
-						onChange={e => setTenantId(e.target.value)}
-						placeholder='Enter Tenant ID (e.g., tenant1 or tenant2)'
-						className='w-full p-3 text-lg text-gray-900 dark:text-gray-100 border-2 border-indigo-300 dark:border-indigo-600 rounded-lg focus:ring-2 focus:ring-indigo-500'
-					/>
-					<Button
-						type='submit'
-						disabled={isLoading}
-						className='w-full py-3 text-lg bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-lg transition-colors'
-					>
-						{isLoading ? 'Loading...' : 'Load Tenant'}
-					</Button>
-				</form>
+				<select
+					value={tenantId}
+					onChange={e => {
+						const value = e.target.value
+						setTenantId(value)
+						handleTenantSelect(value)
+					}}
+					className='w-full p-3 text-lg text-gray-900 dark:text-gray-100 border-2 border-indigo-300 dark:border-indigo-600 rounded-lg focus:ring-2 focus:ring-indigo-500'
+					disabled={isLoading}
+				>
+					<option value=''>Select Tenant</option>
+					<option value='tenant1'>Tenant 1</option>
+					<option value='tenant2'>Tenant 2</option>
+				</select>
 			</CardContent>
 		</Card>
 	)
