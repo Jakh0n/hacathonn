@@ -1,7 +1,11 @@
 import { Badge } from '@/components/ui/badge'
-import { COLORS, usageDistributionData } from '@/constants/data'
+import {
+	COLORS,
+	usageDistributionData,
+	userActivityData,
+} from '@/constants/data'
 import { Tenant } from '@/types'
-import { Globe, MessageSquare } from 'lucide-react'
+import { Bell, Globe, MessageSquare, Sun } from 'lucide-react'
 import {
 	Bar,
 	Cell,
@@ -19,15 +23,6 @@ interface ActivityData {
 	users: number
 }
 
-const userActivityData: ActivityData[] = [
-	{ day: 'Mon', users: 120 },
-	{ day: 'Tue', users: 150 },
-	{ day: 'Wed', users: 90 },
-	{ day: 'Thu', users: 200 },
-	{ day: 'Fri', users: 180 },
-	{ day: 'Sat', users: 220 },
-	{ day: 'Sun', users: 160 },
-]
 interface ModuleProps {
 	tenant: Tenant
 }
@@ -37,7 +32,11 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 			<div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
 				<div className='flex flex-col space-y-2'>
 					<div className='p-4 border rounded-lg'>
-						<h1 className='text-2xl font-bold font-spaceGrotesk'>
+						<h1
+							className={`text-2xl  font-bold font-spaceGrotesk ${
+								tenant.config.theme === 'dark' ? 'text-white' : 'text-black'
+							}`}
+						>
 							Usage Distribution:
 						</h1>
 						<div className='p-4 h-48'>
@@ -74,7 +73,11 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 					</div>
 					<div className='p-4 border rounded-lg'>
 						<div className='col-span-1'>
-							<div className='flex flex-row items-center justify-between pb-2'>
+							<div
+								className={`flex flex-row items-center justify-between pb-2 ${
+									tenant.config.theme === 'dark' ? 'text-white' : 'text-black'
+								}`}
+							>
 								<h1 className='text-2xl font-bold font-spaceGrotesk'>
 									{tenant.name}
 								</h1>
@@ -89,22 +92,34 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 												: 'bg-gray-100'
 										}`}
 									>
-										<p className='text-sm text-gray-500 dark:text-gray-400'>
-											Tenant ID
+										<p
+											className={`text-sm ${
+												tenant.config.theme === 'dark'
+													? 'text-white'
+													: 'text-black'
+											}`}
+										>
+											Tenant ID:
 										</p>
-										<h3 className='text-lg font-medium font-spaceGrotesk mt-1'>
-											{tenant.domain}
+										<h3
+											className={`text-lg font-medium mt-1 ${
+												tenant.config.theme === 'dark'
+													? 'text-white'
+													: 'text-black'
+											}`}
+										>
+											{tenant.id}
 										</h3>
 										<div className='flex items-center mt-2'>
 											<Globe className='size-4 mr-2 text-gray-500' />
 											<p
-												className={`${
+												className={` text-muted-foreground text-sm ${
 													tenant.config.theme === 'dark'
 														? 'text-white'
 														: 'text-black'
 												}`}
 											>
-												{tenant.id}
+												{tenant.domain}
 											</p>
 										</div>
 									</div>
@@ -122,13 +137,42 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 													Realtime Chat
 												</p>
 											</div>
+
+											{tenant.config.enableRealtimeChat ? (
+												<Badge
+													variant='secondary'
+													className=' text-green-800 bg-green-100'
+												>
+													Enabled
+												</Badge>
+											) : (
+												<Badge
+													variant='secondary'
+													className=' text-red-800 bg-red-100'
+												>
+													Disabled
+												</Badge>
+											)}
+										</div>
+
+										<div
+											className={`flex items-center justify-between mt-2 border p-5 rounded-lg ${
+												tenant.config.theme === 'dark'
+													? 'bg-gray-800'
+													: 'bg-gray-200'
+											}`}
+										>
+											<div className='flex items-center'>
+												<Sun className='w-4 h-4 mr-2 text-blue-500' />
+												<p className='text-md text-gray-500 dark:text-gray-400'>
+													Theme
+												</p>
+											</div>
 											<Badge
 												variant='secondary'
 												className='bg-green-100 text-green-800'
 											>
-												{tenant.config.enableRealtimeChat
-													? 'Enabled'
-													: 'Disabled'}
+												{tenant.config.theme === 'dark' ? 'Dark' : 'Light'}
 											</Badge>
 										</div>
 
@@ -140,42 +184,26 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 											}`}
 										>
 											<div className='flex items-center'>
-												<MessageSquare className='w-4 h-4 mr-2 text-blue-500' />
+												<Bell className='w-4 h-4 mr-2 text-blue-500' />
 												<p className='text-md text-gray-500 dark:text-gray-400'>
-													Realtime Chat
+													Notifications
 												</p>
 											</div>
-											<Badge
-												variant='secondary'
-												className='bg-green-100 text-green-800'
-											>
-												{tenant.config.enableNotifications
-													? 'Enabled'
-													: 'Disabled'}
-											</Badge>
-										</div>
-
-										<div
-											className={`flex items-center justify-between mt-2 border p-5 rounded-lg ${
-												tenant.config.theme === 'dark'
-													? 'bg-gray-800'
-													: 'bg-gray-200'
-											}`}
-										>
-											<div className='flex items-center'>
-												<MessageSquare className='w-4 h-4 mr-2 text-blue-500' />
-												<p className='text-md text-gray-500 dark:text-gray-400'>
-													Realtime Chat
-												</p>
-											</div>
-											<Badge
-												variant='secondary'
-												className='bg-green-100 text-green-800'
-											>
-												{tenant.config.enableNotifications
-													? 'Enabled'
-													: 'Disabled'}
-											</Badge>
+											{tenant.config.enableNotifications ? (
+												<Badge
+													variant='secondary'
+													className=' text-green-800  bg-green-100'
+												>
+													Enabled
+												</Badge>
+											) : (
+												<Badge
+													variant='secondary'
+													className=' text-red-800 bg-red-100'
+												>
+													Disabled
+												</Badge>
+											)}
 										</div>
 									</div>
 								</div>
@@ -185,7 +213,11 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 				</div>
 				<div className='flex flex-col space-x-2'>
 					<div className='p-4 border rounded-lg'>
-						<p className='text-black dark:text-white text-2xl font-bold font-spaceGrotesk'>
+						<p
+							className={`text-2xl font-bold font-spaceGrotesk ${
+								tenant.config.theme === 'dark' ? 'text-white' : 'text-black'
+							}`}
+						>
 							User Activity (Last 7 Days):
 						</p>
 						<div className='h-56 mt-8'>
@@ -217,7 +249,11 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 					</div>
 
 					<div className='p-4 border rounded-lg mt-4'>
-						<h2 className='text-2xl font-bold font-spaceGrotesk'>
+						<h2
+							className={`text-2xl font-bold font-spaceGrotesk ${
+								tenant.config.theme === 'dark' ? 'text-white' : 'text-black'
+							}`}
+						>
 							Realtime Chating
 						</h2>
 
@@ -232,12 +268,19 @@ const DashboardModules = ({ tenant }: ModuleProps) => {
 									Realtime Chat
 								</p>
 							</div>
-							<Badge
-								variant='secondary'
-								className='bg-green-100 text-green-800'
-							>
-								Enabled
-							</Badge>
+
+							{tenant.config.enableRealtimeChat ? (
+								<Badge
+									variant='secondary'
+									className=' text-green-800 bg-green-100'
+								>
+									Enabled
+								</Badge>
+							) : (
+								<Badge variant='secondary' className=' text-red-800 bg-red-100'>
+									Disabled
+								</Badge>
+							)}
 						</div>
 					</div>
 				</div>

@@ -112,7 +112,7 @@ export default function Dashboard() {
 			{/* Sidebar and Main Content */}
 			<div className='flex h-full'>
 				{/* Sidebar */}
-				<SideBar setTenantId={setTenantId} />
+				{tenant && <SideBar setTenantId={setTenantId} tenant={tenant} />}
 				{/* Main Content */}
 				<main className='flex-1 p-6 mt-16'>
 					{!tenant ? (
