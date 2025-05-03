@@ -1,5 +1,5 @@
-import express from 'express'
-import { tenants } from '../models/tenant-models.js'
+const express = require('express')
+const { tenants } = require('../models/tenant-models')
 
 const router = express.Router()
 
@@ -35,4 +35,4 @@ const setupTenantRoutes = io => {
 	return router
 }
 
-export default setupTenantRoutes
+module.exports = setupTenantRoutes
