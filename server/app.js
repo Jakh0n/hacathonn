@@ -1,8 +1,8 @@
-import cors from 'cors'
-import express from 'express'
-import http from 'http'
-import { Server } from 'socket.io'
-import setupTenantRoutes from './routes/tenant-routes.js'
+const express = require('express')
+const http = require('http')
+const { Server } = require('socket.io')
+const cors = require('cors')
+const setupTenantRoutes = require('./routes/tenant-routes')
 
 const app = express()
 const httpServer = http.createServer(app)
