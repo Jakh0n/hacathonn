@@ -57,9 +57,15 @@ Try it on mobile or desktop:
 
 ## 🚀 Local Setup
 
-### Backend
-
 ```bash
+
+cd frontend
+npm install
+# Add .env.local
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > .env.local
+echo "NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:3001" >> .env.local
+npm run dev
+
 cd server
 npm install
 # Add .env file
